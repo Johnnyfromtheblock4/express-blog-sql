@@ -1,31 +1,18 @@
 // importo l'array dei posts
-const posts = require("../data/db.js");
+const connection = require("../data/db.js");
 
 // INDEX
 const index = (req, res) => {
-  //recuperiamo i parametri passati da query string
-  const tag = req.query.tag;
+  // definisco la query da eseguire
+  const sql = "SELECT * FROM posts";
 
-  // definiamo un array da restituire
-  let filteredPosts = posts;
-
-  //verifico se post non esiste
-  if (filteredPosts === undefined) {
-    return res.status(404).json({
-      error: "404 Pagina non trovata",
-      message: "Il post non è presente",
-    });
-  }
-
-  // controlliamo il valore di title: se diverso da undefined eseguo il filtraggio
-  if (tag) {
-    filteredPosts = posts.filter((item) => {
-      const lowerTags = item.tags.map((tag) => tag.toLowerCase());
-
-      return lowerTags.includes(tag.toLowerCase());
-    });
-  }
-  res.json(filteredPosts);
+  connection.query(sql, (err, results) => {
+    if (err)
+      return res
+        .status(500)
+        .json({ error: "Errore durante l'esecuzione della query: " + err });
+    res.json(results);
+  });
 };
 
 // SHOW
