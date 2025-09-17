@@ -5,8 +5,9 @@ const mysql = require("mysql2");
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",
-  database: "db_post",
+  password: "Mementoauderesemper4!",
+  database: "db_blog",
+  port: 3306,
 });
 
 // instauro una connessione al database
@@ -19,4 +20,4 @@ connection.connect((err) => {
 });
 
 // esportiamo la connessione creata
-module.exports = connection
+module.exports = connection;

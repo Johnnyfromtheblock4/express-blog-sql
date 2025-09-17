@@ -1,5 +1,5 @@
 // importo l'array dei posts
-const posts = require("../data/posts");
+const posts = require("../data/db.js");
 
 // INDEX
 const index = (req, res) => {
@@ -12,7 +12,7 @@ const index = (req, res) => {
   //verifico se post non esiste
   if (filteredPosts === undefined) {
     return res.status(404).json({
-      error: "404 Pagino non trovata",
+      error: "404 Pagina non trovata",
       message: "Il post non è presente",
     });
   }
