@@ -103,26 +103,21 @@ const modify = (req, res) => {
   res.json(post);
 };
 
-// DESTROY
+// DESTROY (delete)
 const destroy = (req, res) => {
-  const id = parseInt(req.params.id);
+  // recupero il parametro passato nell'indirizzo e lo converto in numero
+  const { id } = req.params;
 
-  // recupero il post
-  const post = posts.find((item) => item.id === id);
+  // per eliminare la pizza dal menu: instauro la connesione ed eseguo la query
+  const sql = "DELETE FROM posts WHERE id = ?";
 
-  // verifico se post non esiste
-  if (!post) {
-    return res.status(404).json({
-      error: "404 Pagino non trovata",
-      message: "Il post non è presente",
-    });
-  }
-
-  // cancello il post dall'array
-  posts.splice(posts.indexOf(post), 1);
-
-  // restituisco lo status 204 per aver cancellato con successo il post dall'array
-  res.sendStatus(204);
+  connection.query(sql, [id], (err) => {
+    if (err)
+      return res
+        .status(500)
+        .json({ error: "Errore nella esecuzione della query" + err });
+    res.sendStatus(204);
+  });
 };
 
 // esporto le rotte
