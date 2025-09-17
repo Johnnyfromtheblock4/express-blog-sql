@@ -17,20 +17,25 @@ const index = (req, res) => {
 
 // SHOW
 const show = (req, res) => {
-  const id = parseInt(req.params.id);
+  // recupero il parametro passato nell'indirizzo e lo converto in numero
+  const { id } = req.params;
 
-  //recupero il post con l'id passato come parametro
-  const post = posts.find((item) => item.id === id);
+  // imposto la query
+  const sql = "SELECT * from posts WHERE id = ?";
 
-  //verifico se post non esiste
-  if (!post) {
-    return res.status(404).json({
-      error: "404 Pagino non trovata",
-      message: "Il post non è presente",
-    });
-  }
+  // eseguo la query
+  connection.query(sql, [id], (err, results) => {
+    // controllo che non ci siamo errori
+    if (err)
+      return res
+        .status(500)
+        .json({ error: "Errore durante l'esecuzione della query: " + err });
+    // controllo che la query effettivamente mi restituisca un array NON vuoto
+    if (results.length === 0)
+      return res.status(404).json({ error: "Pizza non trovata" });
 
-  res.json(post);
+    res.json(results[0]);
+  });
 };
 
 // STORE
