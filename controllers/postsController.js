@@ -6,6 +6,7 @@ const index = (req, res) => {
   // definisco la query da eseguire
   const sql = "SELECT * FROM posts";
 
+  // eseguo la query
   connection.query(sql, (err, results) => {
     if (err)
       return res
@@ -32,7 +33,7 @@ const show = (req, res) => {
         .json({ error: "Errore durante l'esecuzione della query: " + err });
     // controllo che la query effettivamente mi restituisca un array NON vuoto
     if (results.length === 0)
-      return res.status(404).json({ error: "Pizza non trovata" });
+      return res.status(404).json({ error: "Post non trovato" });
 
     res.json(results[0]);
   });
