@@ -25,17 +25,22 @@ const show = (req, res) => {
   const sql = "SELECT * from posts WHERE id = ?";
 
   // eseguo la query
-  connection.query(sql, [id], (err, results) => {
+  connection.query(sql, [id], (err, resultPost) => {
     // controllo che non ci siamo errori
     if (err)
       return res
         .status(500)
         .json({ error: "Errore durante l'esecuzione della query: " + err });
-    // controllo che la query effettivamente mi restituisca un array NON vuoto
-    if (results.length === 0)
-      return res.status(404).json({ error: "Post non trovato" });
+    const tagsSql = resultPost[0];
 
-    res.json(results[0]);
+    connection.query(tagsSql, [id], (err, resultsTags) => {
+      if (err)
+        return res
+          .status(500)
+          .json({ error: `Errore nell'esecuzione della query: ${err}` });
+      post.tags = resultsTags;
+      res.json(post);
+    });
   });
 };
 
