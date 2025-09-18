@@ -22,22 +22,26 @@ const show = (req, res) => {
   const { id } = req.params;
 
   // imposto la query
-  const sql = "SELECT * from posts WHERE id = ?";
+  const postSql = "SELECT * from posts WHERE id = ?";
 
   // eseguo la query
-  connection.query(sql, [id], (err, resultPost) => {
+  connection.query(postSql, [id], (err, resultPost) => {
     // controllo che non ci siamo errori
     if (err)
       return res
         .status(500)
         .json({ error: "Errore durante l'esecuzione della query: " + err });
-    const tagsSql = resultPost[0];
+    if (resultPost === 0)
+      return res.status(404).json({ error: "Post non trovato" });
+    const tagsSql =
+      "SELECT * FROM tags JOIN post_tag ON post_tag.tag_id = tags.id WHERE post_tag.post_id = ?";
 
+    const post = resultPost[0];
     connection.query(tagsSql, [id], (err, resultsTags) => {
       if (err)
         return res
           .status(500)
-          .json({ error: `Errore nell'esecuzione della query: ${err}` });
+          .json({ error: `Errore nell'esecuzione della quesri: ${err}` });
       post.tags = resultsTags;
       res.json(post);
     });
